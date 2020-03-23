@@ -9,8 +9,12 @@
     <link rel="stylesheet" href="../plugins/adminLTE/css/AdminLTE.css">
     <link rel="stylesheet" href="../plugins/adminLTE/css/skins/_all-skins.min.css">
     <link rel="stylesheet" href="../css/style.css">
+	<link href="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+
 	<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../plugins/moment-with-locales.min.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
 	<script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
 
@@ -63,6 +67,7 @@
 				if($scope.entity.id != null){
 					methodName = 'update';
 				}
+				$scope.entity.birthday = $("#datetimepicker1").find("input").val();
 				$http.post('../user/'+methodName+'.do', $scope.entity).success(
 						function(response){
 							if(response.success){
@@ -241,7 +246,15 @@
 					</tr>
 					<tr>
 						<td>头像地址</td>
-						<td><input  class="form-control" placeholder="头像地址" ng-model="entity.headPic">  </td>
+						<td>
+							<div class="form-inline row">
+
+							</div>
+							<form id ="form">
+								<input type="file" name="file" ng-model="entity.headPic">
+								<input type="button" value="上传" onclick="fileupload()">
+							</form>
+						</td>
 					</tr>
 					<tr>
 						<td>性别</td>
@@ -249,16 +262,57 @@
 					</tr>
 					<tr>
 						<td>生日</td>
-						<td><input  class="form-control" placeholder="生日" ng-model="entity.birthday">  </td>
+						<td>
+							<!--指定 date标记-->
+							<div class='input-group date' id='datetimepicker1'>
+								<input type="text" class="form-control"/>
+								<span class="input-group-addon">
+						                <span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</td>
 					</tr>
 				</table>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-click="save()">保存</button>
+				<button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-click="save()" onclick="fileupload2()">保存</button>
 				<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
 			</div>
 		  </div>
 		</div>
 	</div>
+
+	<script type="text/javascript">
+		$(function () {
+			$('#datetimepicker1').datetimepicker({
+				format: 'YYYY-MM-DD',
+				locale: moment.locale('zh-cn')
+			});
+		});
+
+		function fileupload(){
+			alert(1);
+			var formData = new FormData($("#form")[0]);
+			$.ajax({
+				url:'../load/upload',
+				type:'post',
+				data:formData,
+				//必须false才会自动加上正确的Content-Type
+				contentType: false,
+				//必须false才会避开jQuery对 formdata 的默认处理
+				//XMLHttpRequest会对 formdata 进行正确的处理
+				processData: false,
+				success:function(data){
+					alert(data);
+				},
+				error:function(data){
+					alert(data);
+					alert("后台发生异常");
+				},
+				cache:false,
+				async:true
+			});
+		}
+	</script>
 </body>
 </html>

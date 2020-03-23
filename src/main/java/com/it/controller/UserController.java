@@ -4,11 +4,13 @@ import com.it.entity.PageResult;
 import com.it.entity.Result;
 import com.it.entity.User;
 import com.it.service.UserService;
+import com.it.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,6 +50,9 @@ public class UserController {
     @RequestMapping("/add")
     public Result add(@RequestBody User user){
         try {
+
+            user.setCreated(new Date());
+            user.setUpdated(new Date());
             userService.add(user);
             return new Result(true, "增加成功");
         } catch (Exception e) {
@@ -64,6 +69,7 @@ public class UserController {
     @RequestMapping("/update")
     public Result update(@RequestBody User user){
         try {
+            user.setUpdated(new Date());
             userService.update(user);
             return new Result(true, "修改成功");
         } catch (Exception e) {
